@@ -4,8 +4,8 @@ angular.module("app", ['ngMaterial'])
 
 angular.module("app").config(function ($mdThemingProvider) {
   $mdThemingProvider.theme('default')
-    .primaryPalette('indigo')
-    .accentPalette('orange')
+    .primaryPalette('blue', {'default': '900'})
+    .accentPalette('red', {'default': '300'})
 
   $mdThemingProvider.enableBrowserColor({
     theme: 'default', // Default is 'default'
@@ -55,9 +55,13 @@ angular.module('app').component('plankApp', {
 angular.module('app').component('plank', {
   template: `
   <md-content layout-padding="" layout="column">
-    <h2 class="md-display-1" style="text-align: center">Genta</h2>
-    <h3 class="md-headline">Sign up</h3>
-      
+    <h2 class="md-display-1" layout-align="center center" layout>
+        <img src="images/logo.png" style="height: 4rem;">      
+        <div style="margin-left: 3rem">Tilmeld</div>
+    </h2>
+    <h4 class="md-subheader" style="margin-top: -1.9rem; text-align: center">Manage your subscriptions from one place</h4>
+    
+    <h3 class="md-headline">Sign up</h3>     
       <form layout="column">          
         <md-input-container>
           <label>Email</label>
