@@ -16,14 +16,28 @@ angular.module("app").config(function ($mdThemingProvider) {
 
 angular.module('app').component('plankApp', {
   template: `
-<div>
-  <md-button ng-click="$ctrl.route = ${Routes.SUBSCRIPTIONS}" ng-bind="::'${Routes[Routes.SUBSCRIPTIONS]}'"></md-button>
-  <md-button ng-click="$ctrl.route = ${Routes.REQUESTS}" ng-bind="::'${Routes[Routes.REQUESTS]}'"></md-button>
-  <md-button ng-click="$ctrl.route = ${Routes.SIGNUP}" ng-bind="::'${Routes[Routes.SIGNUP]}'"></md-button>
+<div ng-if="$ctrl.route >= 10">
+  <div layout-align="center center" layout="row">
+      <div flex="100">            
+         <h4 class="md-subheader"></h4>
+         <h2 class="md-headline" style="text-align: center">John Doe</h2>
+      </div>
+      <div flex="noshrink">
+        <md-button ng-click="$ctrl.route = ${Routes.SIGNUP}">logout</md-button>
+      </div>
+  </div>
+  
+  <md-tabs md-dynamic-height md-border-bottom>
+    <md-tab label="{{::'${Routes[Routes.REQUESTS]}'}}">
+        <requests></requests>
+    </md-tab>
+    <md-tab label="{{::'${Routes[Routes.SUBSCRIPTIONS]}'}}">
+        <subscriptions></subscriptions>
+    </md-tab>      
+  </md-tabs>
 </div>
-    <requests ng-if="$ctrl.route == ${Routes.REQUESTS}"></requests>
-    <plank ng-if="$ctrl.route == ${Routes.SIGNUP}"></plank>
-    <subscriptions ng-if="$ctrl.route == ${Routes.SUBSCRIPTIONS}"></subscriptions>
+
+ <plank ng-if="$ctrl.route < 10"></plank>    
 `,
   controller: function () {
     Object.defineProperty(this, 'route', {
@@ -40,7 +54,8 @@ angular.module('app').component('plankApp', {
 
 angular.module('app').component('plank', {
   template: `
-  <md-content layout-padding="">      
+  <md-content layout-padding="" layout="column" layout-align="center center ">
+    <h2 class="md-display-1" style="text-align: center">Genti</h2>
     <h3 class="md-headline">Sign up</h3>  
     <div class="nid">
       <input class="nid__input">
@@ -90,14 +105,17 @@ angular.module('app').component('requests', {
 
     this.check = function (item) {
       window.onTokenSuccess = (function (item) {
-        item.selected = true
-        setTimeout(() => $scope.$apply())
+        return function () {
+          item.selected = false
+          $scope.$apply()
+          window.onTokenSuccess = undefined
+        }
       })(item)
 
       handler.open({
-        name: 'Stripe.com',
-        description: '2 widgets',
-        amount: 2000
+        name: item.name,
+        description: item.company,
+        amount: item.amount
       })
     }
   }

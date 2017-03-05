@@ -1,6 +1,6 @@
 export enum Routes {
   SIGNUP = 1,
-  REQUESTS,
+  REQUESTS = 10,
   SUBSCRIPTIONS
 }
 

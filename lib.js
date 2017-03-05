@@ -11,7 +11,7 @@ const stripeConfig = {
 const handler = StripeCheckout.configure({
   key: 'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
   image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-  locale: 'auto',
+  locale: 'dk',
   token: function(token) {
     if (window.onTokenSuccess) onTokenSuccess()
     console.log(token)
