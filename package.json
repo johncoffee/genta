@@ -1,16 +1,14 @@
 {
-  "name": "plank",
+  "name": "pay",
   "version": "1.0.0",
   "description": "...",
   "repository": "none",
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@types/express": "^4.0.35",
     "angular": "^1.6.1",
     "angular-animate": "^1.6.1",
     "angular-aria": "^1.6.1",
@@ -18,12 +16,12 @@
     "express": "^4.15.0",
     "lodash": "^4.17.4",
     "pump": "^1.0.2",
-    "typescript": "^2.2.1"
+    "walk-sync": "^0.3.1"
   },
   "devDependencies": {
+    "@types/express": "^4.0.35",
     "@types/node": "^7.0.3",
     "reflect-metadata": "^0.1.9",
-    "typescript": "^2.1.5",
-    "walk-sync": "^0.3.1"
+    "typescript": "^2.2.1"
   }
 }
