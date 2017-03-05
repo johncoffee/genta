@@ -243,7 +243,9 @@ angular.module('app').component('subscriptions', {
       set: (value) => localStorage.route = value,
     })
 
-    this.list = list.filter(item => item.selected)
+    Object.defineProperty(this, 'list', {
+      get: () => list.filter(item => item.selected),
+    })
 
     this.check = function (item) {
       if (!item.checked) {
