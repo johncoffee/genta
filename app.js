@@ -54,14 +54,37 @@ angular.module('app').component('plankApp', {
 
 angular.module('app').component('plank', {
   template: `
-  <md-content layout-padding="" layout="column" layout-align="center center ">
-    <h2 class="md-display-1" style="text-align: center">Genti</h2>
-    <h3 class="md-headline">Sign up</h3>  
-    <div class="nid">
-      <input class="nid__input">
-      <input class="nid__input" type="password">
-      <button class="nid__input" ng-click="$ctrl.route = ${Routes.REQUESTS}"></button>
-    </div>
+  <md-content layout-padding="" layout="column">
+    <h2 class="md-display-1" style="text-align: center">Genta</h2>
+    <h3 class="md-headline">Sign up</h3>
+      
+      <form layout="column">          
+        <md-input-container>
+          <label>Email</label>
+          <input ng-model="$ctrl.user.email" ng-change="$ctrl.user.email.indexOf('.dk') > -1 ? $ctrl.user.country = 'Denmark' : ''" ng-model-options="{debounce: 666}">
+        </md-input-container>
+        
+        <md-input-container class="md-block">
+          <label>Country</label>
+          <input ng-model="$ctrl.user.country">
+        </md-input-container>
+       
+        <md-input-container class="md-block" ng-if="$ctrl.user.country === 'Denmark'">
+          <label>Cpr-nr</label>
+          <input ng-model="$ctrl.user.name">
+        </md-input-container>
+                
+        <div ng-if="$ctrl.user.country === 'Denmark'">
+          <h4 class="md-subhead" style="margin-top: 0">Validate against the CPR register</h4>
+          <div class="nid">
+            <input class="nid__input">
+            <input class="nid__input" type="password">
+            <button class="nid__input" ng-click="$ctrl.route = ${Routes.REQUESTS}"></button>
+          </div>
+        </div>
+    
+      </form>
+                
 </md-content>
   
   `,
@@ -70,6 +93,64 @@ angular.module('app').component('plank', {
       get: () => localStorage.route,
       set: (value) => localStorage.route = value,
     })
+  }
+})
+
+
+angular.module('app').controller('auto', function DemoCtrl ($timeout, $q, $log) {
+    var self = this;
+
+    self.simulateQuery = false;
+    self.isDisabled    = false;
+
+    // list of `state` value/display objects
+    self.states        = loadAll();
+    self.querySearch   = querySearch;
+    self.selectedItemChange = selectedItemChange;
+    self.searchTextChange   = searchTextChange;
+
+    self.newState = newState;
+
+    function newState(state) {
+      alert("Sorry! You'll need to create a Constitution for " + state + " first!");
+    }
+
+    function querySearch (query) {
+      var results = query ? self.states.filter( createFilterFor(query) ) : self.states,
+        deferred;
+      if (self.simulateQuery) {
+        deferred = $q.defer();
+        $timeout(function () { deferred.resolve( results ); }, Math.random() * 1000, false);
+        return deferred.promise;
+      } else {
+        return results;
+      }
+    }
+
+    function searchTextChange(text) {
+      $log.info('Text changed to ' + text);
+    }
+
+    function selectedItemChange(item) {
+      $log.info('Item changed to ' + JSON.stringify(item));
+    }
+
+    function loadAll() {
+      var items = 'Denmark';
+
+      return items.split(/, +/g).map( function (state) {
+        return {
+          value: state.toLowerCase(),
+          display: state
+        };
+      });
+    }
+    function createFilterFor(query) {
+      var lowercaseQuery = query.toLowerCase()
+
+      return function filterFn(state) {
+        return (state.value.indexOf(lowercaseQuery) === 0);
+      };
   }
 })
 
@@ -101,12 +182,25 @@ angular.module('app').component('requests', {
       set: (value) => localStorage.route = value,
     })
 
-    this.list = list.filter(item => !item.selected)
+    Object.defineProperty(this, 'list', {
+      get: () => list.filter(item => !item.selected)
+    })
 
     this.check = function (item) {
+      const handler = StripeCheckout.configure({
+        key: 'pk_test_wbX0FkGoH0wY8QajKTihIjw8',
+        image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+        locale: 'auto',
+        currency: 'DKK',
+        token: function(token) {
+          if (window.onTokenSuccess) onTokenSuccess()
+          console.debug(token)
+        }
+      })
+
       window.onTokenSuccess = (function (item) {
         return function () {
-          item.selected = false
+          item.selected = true // activated subscription
           $scope.$apply()
           window.onTokenSuccess = undefined
         }
@@ -115,7 +209,7 @@ angular.module('app').component('requests', {
       handler.open({
         name: item.name,
         description: item.company,
-        amount: item.amount
+        amount: item.amount * 100
       })
     }
   }

@@ -1,27 +1,5 @@
 'use strict'
 
-const stripeConfig = {
-  key: 'pk_test_DHMnPcqtrrWSvo1REbYqFnh7',
-    image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-    locale: 'auto',
-    currency: 'DKK',
-  // rest field from https://stripe.com/docs/checkout
-}
-
-const handler = StripeCheckout.configure({
-  key: 'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
-  image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
-  locale: 'dk',
-  token: function(token) {
-    if (window.onTokenSuccess) onTokenSuccess()
-    console.log(token)
-  }
-});
-// Close Checkout on page navigation:
-window.addEventListener('popstate', function() {
-  handler.close();
-});
-
 function loadContent () {
   return new Promise((resolve, reject) => {
     let items = null

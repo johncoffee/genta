@@ -38,7 +38,6 @@ html, body { height:100%; }
 }
 
 .nid {
-    width: 80%;
     position: relative;
     background: transparent url('images/nid.png') no-repeat 0 0;
     height: 461px;
