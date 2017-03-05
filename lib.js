@@ -8,6 +8,20 @@ const stripeConfig = {
   // rest field from https://stripe.com/docs/checkout
 }
 
+const handler = StripeCheckout.configure({
+  key: 'pk_test_6pRNASCoBOKtIshFeQd4XMUh',
+  image: 'https://stripe.com/img/documentation/checkout/marketplace.png',
+  locale: 'auto',
+  token: function(token) {
+    if (window.onTokenSuccess) onTokenSuccess()
+    console.log(token)
+  }
+});
+// Close Checkout on page navigation:
+window.addEventListener('popstate', function() {
+  handler.close();
+});
+
 function loadContent () {
   return new Promise((resolve, reject) => {
     let items = null
@@ -99,3 +113,4 @@ function playRandomFromArray (array, delay) {
     array.splice(idx, 1)
   }
 }
+
